@@ -33,4 +33,23 @@ document.addEventListener("DOMContentLoaded", () => {
       );
     });
   });
+
+  document.addEventListener("DOMContentLoaded", () => {
+    const mainScreen = document.getElementById("main-screen");
+    const dimmedScreen = document.getElementById("dimmed-screen");
+    const openDimmedButton = document.getElementById("open-dimmed");
+    const closeDimmedButton = document.getElementById("close-dimmed");
+  
+    // Dimmed 화면 열기
+    openDimmedButton.addEventListener("click", () => {
+      mainScreen.classList.add("hidden"); // 초기 화면 숨기기
+      dimmedScreen.classList.remove("hidden"); // Dimmed 화면 표시
+    });
+  
+    // Dimmed 화면 닫기
+    closeDimmedButton.addEventListener("click", () => {
+      dimmedScreen.classList.add("hidden"); // Dimmed 화면 숨기기
+      mainScreen.classList.remove("hidden"); // 초기 화면 다시 표시
+    });
+  });
   
