@@ -162,6 +162,7 @@
   border-radius: 10px;
   max-width: 230px;
   word-wrap: break-word;
+  color: black;
 }
 
 #chatting-bubble-container .message.right .message-text {
