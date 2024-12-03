@@ -170,9 +170,13 @@
 
 #chatting-bubble-container .philosopher-name {
   font-size: 14px;
-  color: gray;
+  color: black;
   text-align: center;
   margin-top: 5px;
+  word-wrap: break-word; /* 긴 단어 줄바꿈 */
+  overflow-wrap: break-word; /* 텍스트 자동 줄바꿈 */
+  max-width: 80px; /* 최대 너비 설정 (필요에 따라 조정) */
+  white-space: normal; /* 텍스트를 여러 줄로 표시 */
 }
 
 
