@@ -16,7 +16,7 @@
   // 선택 제목 생성
   const selectTitle = document.createElement('div');
   selectTitle.id = 'philosopher-select-title-container';
-  selectTitle.innerText = 'Select philosopher !';
+  selectTitle.innerText = 'Select Talker';
 
   // 이미지 컨테이너 생성
   const imageContainer = document.createElement('div');
