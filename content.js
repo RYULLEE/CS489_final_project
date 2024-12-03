@@ -142,25 +142,41 @@
   function displayMessage(philosopherId, message, isRightAligned) {
     const chatContainer = document.getElementById('chatting-bubble-container');
 
+    // 메세지 전체 컨테이너
     const messageDiv = document.createElement('div');
     messageDiv.classList.add('message');
     if (isRightAligned) messageDiv.classList.add('right');
 
+    // 철학자 이미지
     const imgElement = document.createElement('img');
     imgElement.src = chrome.runtime.getURL('asset/' + images[philosopherId - 1].current);
     imgElement.alt = philosopherNames[philosopherId];
     imgElement.classList.add('philosopher-image');
+    
+    // 철학자 이름
+    const nameElement = document.createElement('span');
+    nameElement.className = 'philosopher-name';
+    nameElement.textContent = philosopherNames[philosopherId]; // 이름 설정
 
+    // 요소 조립
+    const nameAndImageDiv = document.createElement('div');
+    nameAndImageDiv.classList.add('name-and-image');
+    nameAndImageDiv.appendChild(imgElement);
+    nameAndImageDiv.appendChild(nameElement);
+
+    // 메세지 텍스트
     const textDiv = document.createElement('div');
     textDiv.classList.add('message-text');
     textDiv.textContent = message;
 
+    
+
     if (isRightAligned) {
-      messageDiv.appendChild(textDiv);
-      messageDiv.appendChild(imgElement);
+      messageDiv.appendChild(textDiv); // 메시지 추가
+      messageDiv.appendChild(nameAndImageDiv); // 이름+이미지 추가
     } else {
-      messageDiv.appendChild(imgElement);
-      messageDiv.appendChild(textDiv);
+      messageDiv.appendChild(nameAndImageDiv); // 이름+이미지 추가
+      messageDiv.appendChild(textDiv); // 메시지 추가
     }
 
     chatContainer.appendChild(messageDiv);
