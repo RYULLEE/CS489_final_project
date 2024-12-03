@@ -30,16 +30,40 @@
     { current: 'ph4.png', alternate: 'ph4_check.png' },
   ];
 
+  const philosopherStyles = {
+    1: 'You are Immanuel Kant.',
+    2: 'You are Friedrich Nietzsche.',
+    3: 'You are Aristotle.',
+    4: 'You are Socrates.',
+  };
+
+  const philosopherNames = {
+    1: 'Immanuel Kant',
+    2: 'Friedrich Nietzsche',
+    3: 'Aristotle',
+    4: 'Socrates',
+  };
+
   let selectedImages = [];
 
   // 이미지 요소 생성 및 이벤트 리스너 추가
   images.forEach((imgData, index) => {
+    const philosopherContainer = document.createElement('div');
+    philosopherContainer.className = 'philosopher-item';
+
+    //이미지 요소 생성
     const imgElement = document.createElement('img');
     imgElement.src = chrome.runtime.getURL('asset/' + imgData.current);
     imgElement.alt = 'Image ' + (index + 1);
     imgElement.dataset.current = 'current';
     imgElement.dataset.index = index;
 
+    
+    // 이름 요소 생성
+    const nameElement = document.createElement('span');
+    nameElement.className = 'philosopher-name';
+    nameElement.textContent = philosopherNames[index + 1]; // 철학자 이름 추가
+    
     imgElement.addEventListener('click', () => {
       if (imgElement.dataset.current === 'current') {
         if (selectedImages.length < 2) {
@@ -55,8 +79,9 @@
         selectedImages = selectedImages.filter((i) => i !== index + 1);
       }
     });
-
-    imageContainer.appendChild(imgElement);
+    philosopherContainer.appendChild(imgElement);
+    philosopherContainer.appendChild(nameElement);
+    imageContainer.appendChild(philosopherContainer);
   });
 
   const modal = document.createElement('div');
@@ -92,19 +117,6 @@
     })
     .catch((error) => console.error('Failed to load config.json:', error));
 
-  const philosopherStyles = {
-    1: 'You are Immanuel Kant.',
-    2: 'You are Friedrich Nietzsche.',
-    3: 'You are Aristotle.',
-    4: 'You are Socrates.',
-  };
-
-  const philosopherNames = {
-    1: 'Immanuel Kant',
-    2: 'Friedrich Nietzsche',
-    3: 'Aristotle',
-    4: 'Socrates',
-  };
 
   async function getPhilosopherOpinion(messages) {
     try {
