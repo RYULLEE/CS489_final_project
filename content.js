@@ -67,7 +67,11 @@
 
   const closeButton = document.createElement('button');
   closeButton.id = 'philosopher-close-button';
-  closeButton.innerText = 'Done';
+  // 'Done' 버튼 기능 유지 및 체크 아이콘 추가
+  const checkIcon = document.createElement('img');
+  checkIcon.src = chrome.runtime.getURL('asset/check_icon.png'); // 체크 아이콘 이미지 경로
+  checkIcon.alt = 'Check Icon';
+  closeButton.appendChild(checkIcon);
 
   modal.appendChild(contentArea);
   overlay.appendChild(selectTitle);

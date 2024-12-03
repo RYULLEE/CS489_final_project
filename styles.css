@@ -76,14 +76,16 @@
 
 /* 종료 버튼 스타일 */
 #philosopher-close-button {
-  width: 200px;
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  margin: 10px;
+}
+
+#philosopher-close-button img {
+  width: 64px; /* 적절한 크기로 설정 */
   height: 64px;
-  border-radius: 8px;
-  align-items: center;
-  justify-content: center;
-  margin-top: 120px;
-  background-color: #C5C5C5;
-  font-size: 36px;
 }
 
 /* 내용 표시 영역 스타일 */
