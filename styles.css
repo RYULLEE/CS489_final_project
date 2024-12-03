@@ -35,6 +35,7 @@
   color: rgba(255, 255, 255);
   align-items: center;
   justify-content: center;
+  font-family: 'Arial', sans-serif;
 }
 
 /* 이미지 컨테이너 스타일 */
