@@ -115,7 +115,7 @@
   height: 400px;
   background-color: rgba(181, 181, 181, 0.6);
   position: fixed;
-  bottom: 160px;
+  bottom: 20px;
   right: 20px;
   z-index: 10000;
   overflow-y: auto;
@@ -152,7 +152,7 @@
 
 #chatting-bubble-container .message-text {
   display: inline-block;
-  background-color: #f1f0f0;
+  background-color: #fef5f5;
   padding: 10px;
   border-radius: 10px;
   max-width: 230px;
@@ -160,7 +160,7 @@
 }
 
 #chatting-bubble-container .message.right .message-text {
-  background-color: #d137dd;
+  background-color: #f8fef5;
   max-width: 240px;
 }
 
@@ -192,4 +192,14 @@
   100% {
     left: 100%;
   }
+}
+
+/* 좌측 상단 고정 스타일 */
+#tree-image {
+  position: fixed;
+  top: 20px; /* 화면 상단에서 20px 떨어짐 */
+  left: 20px; /* 화면 왼쪽에서 20px 떨어짐 */
+  width: 100px; /* 이미지 너비 */
+  height: auto; /* 비율 유지 */
+  z-index: 10000; /* 다른 요소 위에 표시되도록 */
 }
