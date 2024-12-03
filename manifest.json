@@ -4,6 +4,11 @@
   "name": "philosopher's battlefield",
   "version": "1.0",
   "description": "An interactive Chrome extension.",
+  "icons": {
+    "16": "asset/icons/icon16.png",
+    "48": "asset/icons/icon48.png",
+    "128": "asset/icons/icon128.png"
+  },
   "permissions": ["activeTab", "scripting"],
   "host_permissions": ["https://api.openai.com/"],
   "action": {
