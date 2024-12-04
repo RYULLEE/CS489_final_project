@@ -148,6 +148,7 @@
   display: flex;
   flex-direction: column;
   align-items: flex-start;
+  justify-content: flex-start; /* 요소를 부모의 왼쪽 정렬 */
   margin-bottom: 10px;
 }
 
@@ -169,8 +170,8 @@
   flex-direction: row;
   align-items: center;
   margin-bottom: 10px;
-  margin-left: 10px;
-  margin-right: 0px; /* 이름/사진과 메시지 사이 간격 */
+  margin-left: 0px;
+  margin-right: 10px; /* 이름/사진과 메시지 사이 간격 */
 }
 
 #chatting-bubble-container .message.right .name-and-image {
