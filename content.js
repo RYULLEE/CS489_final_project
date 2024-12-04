@@ -322,3 +322,93 @@ async function chat(phil_Ids, text) {
   });
   
 })();
+
+
+(async function () {
+  let API_KEY = '';
+
+  // 나무 컨테이너 추가
+  const treeContainer = document.createElement("div");
+  treeContainer.id = "tree-container";
+
+  // 나무 이미지 추가
+  const treeImage = document.createElement("img");
+  treeImage.id = "tree-image";
+  treeImage.src = chrome.runtime.getURL("asset/tree_healthy.png"); // 초기 이미지 경로
+  treeImage.alt = "Tree Status";
+
+  // 나무 퍼센티지 텍스트 추가
+  const treePercentage = document.createElement("div");
+  treePercentage.id = "tree-percentage";
+  treePercentage.textContent = "Usage: 0%"; // 초기값
+
+  // 나무 컨테이너에 이미지와 퍼센티지 추가
+  treeContainer.appendChild(treeImage);
+  treeContainer.appendChild(treePercentage);
+
+  // 나무 컨테이너를 body에 추가
+  document.body.appendChild(treeContainer);
+
+  // 나무 이미지를 업데이트하는 함수
+  function updateTreeBurnStage(usagePercentage) {
+    treePercentage.textContent = `Usage: ${usagePercentage}%`;
+
+    if (usagePercentage < 25) {
+      treeImage.src = chrome.runtime.getURL("asset/tree_healthy.png");
+    } else if (usagePercentage < 50) {
+      treeImage.src = chrome.runtime.getURL("asset/tree_slight_burn.png");
+    } else if (usagePercentage < 75) {
+      treeImage.src = chrome.runtime.getURL("asset/tree_moderate_burn.png");
+    } else {
+      treeImage.src = chrome.runtime.getURL("asset/tree_burned.png");
+    }
+  }
+
+  // 사용량 퍼센트 계산 함수
+  function calculateUsagePercentage(totalUsage) {
+    const maxUsage = 1000000; // 최대 사용량 (예: 100만 토큰)
+    const percentage = (totalUsage / maxUsage) * 100;
+    return Math.min(100, Math.max(0, percentage));
+  }
+
+  // GPT 사용량 가져오는 함수
+  async function fetchGPTUsage() {
+    try {
+      const response = await fetch('https://api.openai.com/v1/usage', {
+        method: 'GET',
+        headers: {
+          Authorization: `Bearer ${API_KEY}`,
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const data = await response.json();
+
+      if (data && data.total_usage) {
+        const usagePercentage = calculateUsagePercentage(data.total_usage);
+        updateTreeBurnStage(usagePercentage);
+      } else {
+        console.warn('No total_usage found in response.');
+        updateTreeBurnStage(0); // 기본값으로 초기화
+      }
+    } catch (error) {
+      console.error('Failed to fetch GPT usage:', error);
+      updateTreeBurnStage(0); // 기본값으로 초기화
+    }
+  }
+
+  // config.json에서 API_KEY 가져오기
+  try {
+    const configResponse = await fetch(chrome.runtime.getURL('config.json'));
+    const configData = await configResponse.json();
+    API_KEY = configData.openaiApiKey;
+
+    // 5초마다 GPT 사용량 업데이트
+    setInterval(fetchGPTUsage, 5000);
+  } catch (error) {
+    console.error('Failed to load API_KEY from config.json:', error);
+  }
+})();
