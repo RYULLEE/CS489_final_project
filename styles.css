@@ -146,12 +146,15 @@
 /* 메시지 스타일 */
 #chatting-bubble-container .message {
   display: flex;
-  /* align-items: center; */
+  flex-direction: column;
+  align-items: flex-start;
   margin-bottom: 10px;
 }
 
 #chatting-bubble-container .message.right {
-  justify-content: flex-end;
+  flex-direction: column-reverse; 
+  /* justify-content: flex-end; */
+  align-items: flex-end;
 }
 
 #chatting-bubble-container .message img {
@@ -163,20 +166,28 @@
 
 #chatting-bubble-container .message .name-and-image {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   align-items: center;
-  margin-right: 10px;
+  margin-bottom: 10px;
+  margin-left: 10px;
+  margin-right: 0px; /* 이름/사진과 메시지 사이 간격 */
+}
+
+#chatting-bubble-container .message.right .name-and-image {
+  display: flex;
+  flex-direction: row-reverse;
+  align-items: center;
+  margin-bottom: 10px;
+  margin-left: 10px;
+  margin-right: 0px; /* 이름/사진과 메시지 사이 간격 */
 }
 
 #chatting-bubble-container .philosopher-name {
   font-size: 14px;
   color: black;
   text-align: center;
+  margin-left: 5px;
   margin-top: 5px;
-  word-wrap: break-word; /* 긴 단어 줄바꿈 */
-  overflow-wrap: break-word; /* 텍스트 자동 줄바꿈 */
-  max-width: 80px; /* 최대 너비 설정 (필요에 따라 조정) */
-  white-space: normal; /* 텍스트를 여러 줄로 표시 */
 }
 
 
@@ -197,10 +208,12 @@
   max-width: 230px;
   word-wrap: break-word;
   color: black;
+  text-align: left;
 }
 
 #chatting-bubble-container .message.right .message-text {
   background-color: #f8fef5;
+  text-align: left;
   max-width: 240px;
 }
 
