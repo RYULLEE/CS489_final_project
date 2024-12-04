@@ -10,7 +10,7 @@
     "128": "asset/icons/icon128.png"
   },
   "permissions": ["activeTab", "scripting"],
-  "host_permissions": ["https://api.openai.com/"],
+  "host_permissions": ["https://api.openai.com/","https://n.news.naver.com/*","https://m.entertain.naver.com/*","https://m.sports.naver.com/*"],
   "action": {
     "default_icon": "./asset/icon.png"
   },
@@ -26,5 +26,8 @@
       "js": ["content.js"],
       "css": ["styles.css"]
     }
-  ]
+  ],
+  "background": {
+    "service_worker": "background.js"
+  }
 }
