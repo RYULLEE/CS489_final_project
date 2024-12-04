@@ -117,7 +117,6 @@
     })
     .catch((error) => console.error('Failed to load config.json:', error));
 
-
   async function getPhilosopherOpinion(messages) {
     try {
       const response = await fetch('https://api.openai.com/v1/chat/completions', {
@@ -210,16 +209,47 @@
 
   closeButton.addEventListener('click', () => {
     overlay.style.display = 'none';
-
+  
     if (selectedImages.length > 0) {
       const chatContainer = document.createElement('div');
       chatContainer.id = 'chatting-bubble-container';
       document.body.appendChild(chatContainer);
+  
+      // Background Script에 URL 요청
+      chrome.runtime.sendMessage({ type: 'GET_CURRENT_TAB_URL' }, (response) => {
+        const currentTabUrl = response.url;
+  
+        if (currentTabUrl) {
+          let articleText = '';
+          let targetSelector = '';
+          console.log("currentTabUrl : ", currentTabUrl);
+  
+          // 도메인별로 targetSelector 설정
+          if (currentTabUrl.startsWith('https://n.news.naver.com/')) {
+            targetSelector = '#newsct_article';
+          } else if (currentTabUrl.startsWith('https://m.entertain.naver.com/')) {
+            targetSelector = '#comp_news_article';
+          } else if (currentTabUrl.startsWith('https://m.sports.naver.com/')) {
+            targetSelector = '#comp_news_article';
+          }
+  
+          if (targetSelector) {
+            const targetDiv = document.querySelector(targetSelector);
+            console.log("check : ", currentTabUrl.startsWith('https://m.sports.naver.com/'));
+            console.log("articleText : ", targetDiv.innerText);
+            if (targetDiv) {
+              articleText = targetDiv.innerText || '';
 
-      const targetDiv = document.getElementById('newsct_article');
-      const articleText = targetDiv ? targetDiv.querySelector('article')?.innerText || '' : '';
-
-      chat(selectedImages, articleText);
+            }
+          }
+  
+          // 채팅 시작
+          chat(selectedImages, articleText);
+        } else {
+          console.error('현재 탭 URL을 가져올 수 없습니다.');
+        }
+      });
     }
   });
+  
 })();
