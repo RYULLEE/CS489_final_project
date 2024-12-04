@@ -16,7 +16,7 @@
   // 선택 제목 생성
   const selectTitle = document.createElement('div');
   selectTitle.id = 'philosopher-select-title-container';
-  selectTitle.innerText = 'Select philosopher !';
+  selectTitle.innerText = 'Select Talker';
 
   // 이미지 컨테이너 생성
   const imageContainer = document.createElement('div');
@@ -30,16 +30,40 @@
     { current: 'ph4.png', alternate: 'ph4_check.png' },
   ];
 
+  const philosopherStyles = {
+    1: 'You are Immanuel Kant.',
+    2: 'You are Friedrich Nietzsche.',
+    3: 'You are Aristotle.',
+    4: 'You are Socrates.',
+  };
+
+  const philosopherNames = {
+    1: 'Immanuel Kant',
+    2: 'Friedrich Nietzsche',
+    3: 'Aristotle',
+    4: 'Socrates',
+  };
+
   let selectedImages = [];
 
   // 이미지 요소 생성 및 이벤트 리스너 추가
   images.forEach((imgData, index) => {
+    const philosopherContainer = document.createElement('div');
+    philosopherContainer.className = 'philosopher-item';
+
+    //이미지 요소 생성
     const imgElement = document.createElement('img');
     imgElement.src = chrome.runtime.getURL('asset/' + imgData.current);
     imgElement.alt = 'Image ' + (index + 1);
     imgElement.dataset.current = 'current';
     imgElement.dataset.index = index;
 
+    
+    // 이름 요소 생성
+    const nameElement = document.createElement('span');
+    nameElement.className = 'philosopher-name';
+    nameElement.textContent = philosopherNames[index + 1]; // 철학자 이름 추가
+    
     imgElement.addEventListener('click', () => {
       if (imgElement.dataset.current === 'current') {
         if (selectedImages.length < 2) {
@@ -55,8 +79,9 @@
         selectedImages = selectedImages.filter((i) => i !== index + 1);
       }
     });
-
-    imageContainer.appendChild(imgElement);
+    philosopherContainer.appendChild(imgElement);
+    philosopherContainer.appendChild(nameElement);
+    imageContainer.appendChild(philosopherContainer);
   });
 
   const modal = document.createElement('div');
@@ -92,19 +117,6 @@
     })
     .catch((error) => console.error('Failed to load config.json:', error));
 
-  const philosopherStyles = {
-    1: 'You are Immanuel Kant.',
-    2: 'You are Friedrich Nietzsche.',
-    3: 'You are Aristotle.',
-    4: 'You are Socrates.',
-  };
-
-  const philosopherNames = {
-    1: 'Immanuel Kant',
-    2: 'Friedrich Nietzsche',
-    3: 'Aristotle',
-    4: 'Socrates',
-  };
 
   async function getPhilosopherOpinion(messages) {
     try {
@@ -130,25 +142,41 @@
   function displayMessage(philosopherId, message, isRightAligned) {
     const chatContainer = document.getElementById('chatting-bubble-container');
 
+    // 메세지 전체 컨테이너
     const messageDiv = document.createElement('div');
     messageDiv.classList.add('message');
     if (isRightAligned) messageDiv.classList.add('right');
 
+    // 철학자 이미지
     const imgElement = document.createElement('img');
     imgElement.src = chrome.runtime.getURL('asset/' + images[philosopherId - 1].current);
     imgElement.alt = philosopherNames[philosopherId];
     imgElement.classList.add('philosopher-image');
+    
+    // 철학자 이름
+    const nameElement = document.createElement('span');
+    nameElement.className = 'philosopher-name';
+    nameElement.textContent = philosopherNames[philosopherId]; // 이름 설정
 
+    // 요소 조립
+    const nameAndImageDiv = document.createElement('div');
+    nameAndImageDiv.classList.add('name-and-image');
+    nameAndImageDiv.appendChild(imgElement);
+    nameAndImageDiv.appendChild(nameElement);
+
+    // 메세지 텍스트
     const textDiv = document.createElement('div');
     textDiv.classList.add('message-text');
     textDiv.textContent = message;
 
+    
+
     if (isRightAligned) {
-      messageDiv.appendChild(textDiv);
-      messageDiv.appendChild(imgElement);
+      messageDiv.appendChild(textDiv); // 메시지 추가
+      messageDiv.appendChild(nameAndImageDiv); // 이름+이미지 추가
     } else {
-      messageDiv.appendChild(imgElement);
-      messageDiv.appendChild(textDiv);
+      messageDiv.appendChild(nameAndImageDiv); // 이름+이미지 추가
+      messageDiv.appendChild(textDiv); // 메시지 추가
     }
 
     chatContainer.appendChild(messageDiv);

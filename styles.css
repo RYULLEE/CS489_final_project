@@ -1,8 +1,8 @@
 /* 아이콘 버튼 스타일 */
 #philosopher-icon-button {
   position: fixed;
-  bottom: 20px;
-  right: 20px;
+  bottom: 1%;
+  right: 1%;
   z-index: 10000;
   cursor: pointer;
 }
@@ -35,17 +35,20 @@
   color: rgba(255, 255, 255);
   align-items: center;
   justify-content: center;
+  font-family: 'Arial', sans-serif;
 }
 
 /* 이미지 컨테이너 스타일 */
 #philosopher-image-container {
   display: flex;
-  justify-content: space-between;
+  justify-content: center;
   align-items: center;
-  background-color: 'transparent'; /* 반투명 회색 배경 */
-  /* padding-left: 450px;
-  padding-right: 450px; */
-  width: calc(100% - 900px);;
+  background-color: transparent; /* 반투명 회색 배경 */
+  padding-left: 450px;
+  padding-right: 450px;
+  gap: 30px;
+  width: 80vw;
+  height: auto;
   left : 450px;
   /* position: absolute; */
   margin-top: 90px;
@@ -58,6 +61,21 @@
   cursor: pointer;
   border-radius: 10000px;
 }
+
+.philosopher-item {
+  display: flex;
+  flex-direction: column; /* 이미지와 이름을 세로로 정렬 */
+  align-items: center; /* 가운데 정렬 */
+  gap: 10px; /* 이미지와 이름 사이 간격 */
+}
+
+.philosopher-name {
+  font-size: 16px; /* 이름 글씨 크기 */
+  color: white; /* 글씨 색상 */
+  text-align: center;
+  margin-top: 5px; /* 약간의 위쪽 간격 */
+}
+
 
 /* 모달 창 스타일 */
 #philosopher-modal {
@@ -143,6 +161,25 @@
   margin-top: 8px;
 }
 
+#chatting-bubble-container .message .name-and-image {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-right: 10px;
+}
+
+#chatting-bubble-container .philosopher-name {
+  font-size: 14px;
+  color: black;
+  text-align: center;
+  margin-top: 5px;
+  word-wrap: break-word; /* 긴 단어 줄바꿈 */
+  overflow-wrap: break-word; /* 텍스트 자동 줄바꿈 */
+  max-width: 80px; /* 최대 너비 설정 (필요에 따라 조정) */
+  white-space: normal; /* 텍스트를 여러 줄로 표시 */
+}
+
+
 #chatting-bubble-container .message.right img {
   margin-left: 10px;
   margin-right: 0;
@@ -159,6 +196,7 @@
   border-radius: 10px;
   max-width: 230px;
   word-wrap: break-word;
+  color: black;
 }
 
 #chatting-bubble-container .message.right .message-text {
