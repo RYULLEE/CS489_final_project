@@ -275,6 +275,35 @@ async function chat(phil_Ids, text) {
   conversation();
 }
 
+  // GPT 사용량 가져오는 함수
+  async function fetchGPTUsage() {
+    try {
+      const response = await fetch('https://api.openai.com/v1/dashboard/billing/usage?end_date=2024-12-05&start_date=2024-11-14', {
+        method: 'GET',
+        headers: {
+          Authorization: `Bearer ${API_KEY}`,
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const data = await response.json();
+
+      if (data && data.total_usage) {
+        const usagePercentage = calculateUsagePercentage(data.total_usage);
+        updateTreeBurnStage(usagePercentage);
+      } else {
+        console.warn('No total_usage found in response.');
+        updateTreeBurnStage(0); // 기본값으로 초기화
+      }
+    } catch (error) {
+      console.error('Failed to fetch GPT usage:', error);
+      updateTreeBurnStage(0); // 기본값으로 초기화
+    }
+  }
+
 
   closeButton.addEventListener('click', () => {
     overlay.style.display = 'none';
@@ -314,6 +343,8 @@ async function chat(phil_Ids, text) {
   
           // 채팅 시작
           chat(selectedImages, articleText);
+          // 5초마다 GPT 사용량 업데이트
+          setInterval(fetchGPTUsage, 3000);
         } else {
           console.error('현재 탭 URL을 가져올 수 없습니다.');
         }
@@ -371,34 +402,6 @@ async function chat(phil_Ids, text) {
     return Math.min(100, Math.max(0, percentage));
   }
 
-  // GPT 사용량 가져오는 함수
-  async function fetchGPTUsage() {
-    try {
-      const response = await fetch('https://api.openai.com/v1/usage', {
-        method: 'GET',
-        headers: {
-          Authorization: `Bearer ${API_KEY}`,
-        },
-      });
-
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-
-      const data = await response.json();
-
-      if (data && data.total_usage) {
-        const usagePercentage = calculateUsagePercentage(data.total_usage);
-        updateTreeBurnStage(usagePercentage);
-      } else {
-        console.warn('No total_usage found in response.');
-        updateTreeBurnStage(0); // 기본값으로 초기화
-      }
-    } catch (error) {
-      console.error('Failed to fetch GPT usage:', error);
-      updateTreeBurnStage(0); // 기본값으로 초기화
-    }
-  }
 
   // config.json에서 API_KEY 가져오기
   try {
@@ -406,8 +409,6 @@ async function chat(phil_Ids, text) {
     const configData = await configResponse.json();
     API_KEY = configData.openaiApiKey;
 
-    // 5초마다 GPT 사용량 업데이트
-    setInterval(fetchGPTUsage, 5000);
   } catch (error) {
     console.error('Failed to load API_KEY from config.json:', error);
   }
