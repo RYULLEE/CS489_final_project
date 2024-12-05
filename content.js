@@ -309,6 +309,65 @@ async function chat(phil_Ids, text) {
     overlay.style.display = 'none';
   
     if (selectedImages.length > 0) {
+      (function () {
+        // 나무 컨테이너 추가
+        const treeContainer = document.createElement("div");
+        treeContainer.id = "tree-container";
+      
+        // 나무 이미지 추가
+        const treeImage = document.createElement("img");
+        treeImage.id = "tree-image";
+        treeImage.src = chrome.runtime.getURL("asset/tree_healthy.png"); // 기본 상태 이미지
+        treeImage.alt = "Tree Status";
+      
+      
+        // 나무 퍼센티지 텍스트 추가
+        const treePercentage = document.createElement("div");
+        treePercentage.id = "tree-percentage";
+        treePercentage.textContent = "Usage: 0%"; // 초기값
+      
+        // 나무 컨테이너에 이미지와 퍼센티지 추가
+        treeContainer.appendChild(treeImage);
+        treeContainer.appendChild(treePercentage);
+      
+        // 나무 컨테이너를 body에 추가
+        document.body.appendChild(treeContainer);
+      
+        // 나무 이미지를 업데이트하는 함수
+        function updateTreeBurnStage(usagePercentage) {
+          const treeImage = document.getElementById("tree-image");
+          const treePercentage = document.getElementById("tree-percentage");
+      
+          // 사용량 퍼센티지 텍스트 업데이트
+          treePercentage.textContent = `Usage: ${usagePercentage}%`;
+          
+          // 사용량에 따른 이미지 변경
+          if (usagePercentage < 25) {
+            treeImage.src = chrome.runtime.getURL("asset/tree_healthy.png");
+          } else if (usagePercentage < 50) {
+            treeImage.src = chrome.runtime.getURL("asset/tree_slight_burn.png");
+          } else if (usagePercentage < 75) {
+            treeImage.src = chrome.runtime.getURL("asset/tree_moderate_burn.png");
+          } else {
+            treeImage.src = chrome.runtime.getURL("asset/tree_burned.png");
+          }
+        }
+      
+        // GPT 사용량을 시뮬레이션하는 함수
+        function simulateGPTUsage() {
+          // 0~100% 랜덤 사용량 생성
+          const usagePercentage = Math.floor(Math.random() * 101);
+          console.log(`Current usage: ${usagePercentage}%`);
+      
+          // 나무 상태 업데이트
+          updateTreeBurnStage(usagePercentage);
+        }
+      
+        // 5초마다 GPT 사용량 업데이트
+        setInterval(simulateGPTUsage, 5000);
+      })();
+      
+      
       const chatContainer = document.createElement('div');
       chatContainer.id = 'chatting-bubble-container';
       document.body.appendChild(chatContainer);
@@ -354,62 +413,4 @@ async function chat(phil_Ids, text) {
   
 })();
 
-
-(function () {
-  // 나무 컨테이너 추가
-  const treeContainer = document.createElement("div");
-  treeContainer.id = "tree-container";
-
-  // 나무 이미지 추가
-  const treeImage = document.createElement("img");
-  treeImage.id = "tree-image";
-  treeImage.src = chrome.runtime.getURL("asset/tree_healthy.png"); // 기본 상태 이미지
-  treeImage.alt = "Tree Status";
-
-
-  // 나무 퍼센티지 텍스트 추가
-  const treePercentage = document.createElement("div");
-  treePercentage.id = "tree-percentage";
-  treePercentage.textContent = "Usage: 0%"; // 초기값
-
-  // 나무 컨테이너에 이미지와 퍼센티지 추가
-  treeContainer.appendChild(treeImage);
-  treeContainer.appendChild(treePercentage);
-
-  // 나무 컨테이너를 body에 추가
-  document.body.appendChild(treeContainer);
-
-  // 나무 이미지를 업데이트하는 함수
-  function updateTreeBurnStage(usagePercentage) {
-    const treeImage = document.getElementById("tree-image");
-    const treePercentage = document.getElementById("tree-percentage");
-
-    // 사용량 퍼센티지 텍스트 업데이트
-    treePercentage.textContent = `Usage: ${usagePercentage}%`;
-    
-    // 사용량에 따른 이미지 변경
-    if (usagePercentage < 25) {
-      treeImage.src = chrome.runtime.getURL("asset/tree_healthy.png");
-    } else if (usagePercentage < 50) {
-      treeImage.src = chrome.runtime.getURL("asset/tree_slight_burn.png");
-    } else if (usagePercentage < 75) {
-      treeImage.src = chrome.runtime.getURL("asset/tree_moderate_burn.png");
-    } else {
-      treeImage.src = chrome.runtime.getURL("asset/tree_burned.png");
-    }
-  }
-
-  // GPT 사용량을 시뮬레이션하는 함수
-  function simulateGPTUsage() {
-    // 0~100% 랜덤 사용량 생성
-    const usagePercentage = Math.floor(Math.random() * 101);
-    console.log(`Current usage: ${usagePercentage}%`);
-
-    // 나무 상태 업데이트
-    updateTreeBurnStage(usagePercentage);
-  }
-
-  // 5초마다 GPT 사용량 업데이트
-  setInterval(simulateGPTUsage, 5000);
-})();
 
