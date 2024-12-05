@@ -120,7 +120,7 @@
       else throw(Error);
       } else {
         console.error("URL을 가져오지 못했습니다.");
-        return alert("Go to Naver News Detail And Click Me!!");
+        return alert("Please Go to Naver News Detail And Click Me!");
       }
     });
   });
