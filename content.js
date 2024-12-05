@@ -310,6 +310,9 @@ async function chat(phil_Ids, text) {
   
     if (selectedImages.length > 0) {
       (function () {
+
+        let cumulativeUsage = 0; // 누적 사용량 초기화
+
         // 나무 컨테이너 추가
         const treeContainer = document.createElement("div");
         treeContainer.id = "tree-container";
@@ -353,15 +356,16 @@ async function chat(phil_Ids, text) {
           }
         }
       
-        // GPT 사용량을 시뮬레이션하는 함수
-        function simulateGPTUsage() {
-          // 0~100% 랜덤 사용량 생성
-          const usagePercentage = Math.floor(Math.random() * 101);
-          console.log(`Current usage: ${usagePercentage}%`);
-      
-          // 나무 상태 업데이트
-          updateTreeBurnStage(usagePercentage);
-        }
+  // 0~10 사이의 랜덤 값을 생성하고 누적 사용량을 업데이트하는 함수
+  function simulateGPTUsage() {
+    const randomUsage = Math.floor(Math.random() * 11); // 0~10 사이 랜덤 값
+    cumulativeUsage += randomUsage; // 누적 사용량 업데이트
+    const usagePercentage = Math.min(Math.floor((cumulativeUsage / 100) * 100), 100); // 퍼센트를 정수로 계산
+    console.log(`Random Usage: ${randomUsage}, Cumulative Usage: ${cumulativeUsage}, Percentage: ${usagePercentage}%`);
+
+    // 나무 상태 업데이트
+    updateTreeBurnStage(usagePercentage);
+  }
       
         // 5초마다 GPT 사용량 업데이트
         setInterval(simulateGPTUsage, 5000);
