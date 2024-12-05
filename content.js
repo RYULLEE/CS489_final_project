@@ -355,9 +355,7 @@ async function chat(phil_Ids, text) {
 })();
 
 
-(async function () {
-  let API_KEY = '';
-
+(function () {
   // 나무 컨테이너 추가
   const treeContainer = document.createElement("div");
   treeContainer.id = "tree-container";
@@ -365,8 +363,9 @@ async function chat(phil_Ids, text) {
   // 나무 이미지 추가
   const treeImage = document.createElement("img");
   treeImage.id = "tree-image";
-  treeImage.src = chrome.runtime.getURL("asset/tree_healthy.png"); // 초기 이미지 경로
+  treeImage.src = chrome.runtime.getURL("asset/tree_healthy.png"); // 기본 상태 이미지
   treeImage.alt = "Tree Status";
+
 
   // 나무 퍼센티지 텍스트 추가
   const treePercentage = document.createElement("div");
@@ -382,8 +381,13 @@ async function chat(phil_Ids, text) {
 
   // 나무 이미지를 업데이트하는 함수
   function updateTreeBurnStage(usagePercentage) {
-    treePercentage.textContent = `Usage: ${usagePercentage}%`;
+    const treeImage = document.getElementById("tree-image");
+    const treePercentage = document.getElementById("tree-percentage");
 
+    // 사용량 퍼센티지 텍스트 업데이트
+    treePercentage.textContent = `Usage: ${usagePercentage}%`;
+    
+    // 사용량에 따른 이미지 변경
     if (usagePercentage < 25) {
       treeImage.src = chrome.runtime.getURL("asset/tree_healthy.png");
     } else if (usagePercentage < 50) {
@@ -395,21 +399,17 @@ async function chat(phil_Ids, text) {
     }
   }
 
-  // 사용량 퍼센트 계산 함수
-  function calculateUsagePercentage(totalUsage) {
-    const maxUsage = 1000000; // 최대 사용량 (예: 100만 토큰)
-    const percentage = (totalUsage / maxUsage) * 100;
-    return Math.min(100, Math.max(0, percentage));
+  // GPT 사용량을 시뮬레이션하는 함수
+  function simulateGPTUsage() {
+    // 0~100% 랜덤 사용량 생성
+    const usagePercentage = Math.floor(Math.random() * 101);
+    console.log(`Current usage: ${usagePercentage}%`);
+
+    // 나무 상태 업데이트
+    updateTreeBurnStage(usagePercentage);
   }
 
-
-  // config.json에서 API_KEY 가져오기
-  try {
-    const configResponse = await fetch(chrome.runtime.getURL('config.json'));
-    const configData = await configResponse.json();
-    API_KEY = configData.openaiApiKey;
-
-  } catch (error) {
-    console.error('Failed to load API_KEY from config.json:', error);
-  }
+  // 5초마다 GPT 사용량 업데이트
+  setInterval(simulateGPTUsage, 5000);
 })();
+
