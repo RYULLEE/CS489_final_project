@@ -275,6 +275,7 @@ async function chat(phil_Ids, text) {
   conversation();
 }
 
+/*
   // GPT 사용량 가져오는 함수
   async function fetchGPTUsage() {
     try {
@@ -303,7 +304,7 @@ async function chat(phil_Ids, text) {
       updateTreeBurnStage(0); // 기본값으로 초기화
     }
   }
-
+*/
 
   closeButton.addEventListener('click', () => {
     overlay.style.display = 'none';
