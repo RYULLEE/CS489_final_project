@@ -149,7 +149,7 @@
   flex-direction: column;
   align-items: flex-start;
   justify-content: flex-start; /* 요소를 부모의 왼쪽 정렬 */
-  margin-bottom: 10px;
+  margin-bottom: 4px;
 }
 
 #chatting-bubble-container .message.right {
@@ -169,7 +169,7 @@
   display: flex;
   flex-direction: row;
   align-items: center;
-  margin-bottom: 10px;
+  margin-bottom: 4px;
   margin-left: 0px;
   margin-right: 10px; /* 이름/사진과 메시지 사이 간격 */
 }
@@ -178,7 +178,7 @@
   display: flex;
   flex-direction: row-reverse;
   align-items: center;
-  margin-bottom: 10px;
+  margin-bottom: 4px;
   margin-left: 10px;
   margin-right: 0px; /* 이름/사진과 메시지 사이 간격 */
 }
@@ -189,16 +189,22 @@
   text-align: center;
   margin-left: 5px;
   margin-top: 5px;
+  background-color: bisque;
+  padding-top: 2px;
+  padding-bottom: 2px;
+  padding-left: 8px;
+  padding-right: 8px;
+  border-radius: 8px;
 }
 
 
 #chatting-bubble-container .message.right img {
-  margin-left: 10px;
+  margin-left: 6px;
   margin-right: 0;
 }
 
 #chatting-bubble-container .message:not(.right) img {
-  margin-right: 10px;
+  margin-right: 2px;
 }
 
 #chatting-bubble-container .message-text {
@@ -244,7 +250,7 @@
 .message-text.skeleton-box {
   width: 60%;
   height: 48px;
-  margin: 8px 0;
+  margin: 0px 0;
 }
 
 /* 스켈레톤 로딩 애니메이션 */
@@ -257,13 +263,29 @@
   }
 }
 
+#tree-container {
+  position: fixed;  /* 화면에 고정 */
+  bottom: 20px;     /* 화면 하단에서 20px 떨어짐 */
+  left: 20px;       /* 화면 왼쪽에서 20px 떨어짐 */
+  z-index: 10000;   /* 다른 요소 위에 표시 */
+}
 
-/* 좌측 상단 고정 스타일 */
-#tree-image {
+#tree-container {
   position: fixed;
   top: 20px; /* 화면 상단에서 20px 떨어짐 */
   left: 20px; /* 화면 왼쪽에서 20px 떨어짐 */
+  z-index: 10000; /* 다른 요소 위에 표시되도록 */
+}
+
+#tree-image {
   width: 100px; /* 이미지 너비 */
   height: auto; /* 비율 유지 */
-  z-index: 10000; /* 다른 요소 위에 표시되도록 */
+}
+
+#tree-percentage {
+  text-align: center;
+  font-size: 14px;
+  font-weight: bold;
+  color: #333;
+  margin-top: 8px;
 }

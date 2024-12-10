@@ -45,25 +45,26 @@
   };
 
   let selectedImages = [];
+  let trees = [];
+  let currentTreeIndex = 0;
+  let messageCount = 0; 
+  const incrementPerMessage = 6; // 메시지 1개당 증가량 (~6%)
 
   // 이미지 요소 생성 및 이벤트 리스너 추가
   images.forEach((imgData, index) => {
     const philosopherContainer = document.createElement('div');
     philosopherContainer.className = 'philosopher-item';
 
-    //이미지 요소 생성
     const imgElement = document.createElement('img');
     imgElement.src = chrome.runtime.getURL('asset/' + imgData.current);
     imgElement.alt = 'Image ' + (index + 1);
     imgElement.dataset.current = 'current';
     imgElement.dataset.index = index;
 
-    
-    // 이름 요소 생성
     const nameElement = document.createElement('span');
     nameElement.className = 'philosopher-name';
-    nameElement.textContent = philosopherNames[index + 1]; // 철학자 이름 추가
-    
+    nameElement.textContent = philosopherNames[index + 1];
+
     imgElement.addEventListener('click', () => {
       if (imgElement.dataset.current === 'current') {
         if (selectedImages.length < 2) {
@@ -92,9 +93,9 @@
 
   const closeButton = document.createElement('button');
   closeButton.id = 'philosopher-close-button';
-  // 'Done' 버튼 기능 유지 및 체크 아이콘 추가
+
   const checkIcon = document.createElement('img');
-  checkIcon.src = chrome.runtime.getURL('asset/check_icon.png'); // 체크 아이콘 이미지 경로
+  checkIcon.src = chrome.runtime.getURL('asset/check_icon.png');
   checkIcon.alt = 'Check Icon';
   closeButton.appendChild(checkIcon);
 
@@ -108,23 +109,25 @@
   iconButton.addEventListener('click', () => {
     chrome.runtime.sendMessage({ type: 'GET_CURRENT_TAB_URL' }, (response) => {
       if (response && response.url) {
-        console.log("response:", response);
         const currentTabUrl = response.url;
-  
-        if (currentTabUrl.startsWith('https://n.news.naver.com/') || currentTabUrl.startsWith('https://m.entertain.naver.com/') || currentTabUrl.startsWith('https://m.sports.naver.com/')) {
-          
-        
-        overlay.style.display = 'flex';
-        iconButton.style.display = 'none';
-      }
-      else throw(Error);
+
+        if (
+          currentTabUrl.startsWith('https://n.news.naver.com/') ||
+          currentTabUrl.startsWith('https://m.entertain.naver.com/') ||
+          currentTabUrl.startsWith('https://m.sports.naver.com/')
+        ) {
+          overlay.style.display = 'flex';
+          iconButton.style.display = 'none';
+        } else {
+          console.error('지정된 URL이 아닙니다.');
+          alert('Go to Naver News Detail And Click Me!!');
+        }
       } else {
-        console.error("URL을 가져오지 못했습니다.");
-        return alert("Go to Naver News Detail And Click Me!!");
+        console.error('URL을 가져오지 못했습니다.');
+        alert('Go to Naver News Detail And Click Me!!');
       }
     });
   });
-  
 
   fetch(chrome.runtime.getURL('config.json'))
     .then((response) => response.json())
@@ -142,158 +145,197 @@
           Authorization: `Bearer ${API_KEY}`,
         },
         body: JSON.stringify({
-          model: 'gpt-4o-mini',
+          model: 'gpt-3.5-turbo', // 유효한 모델명 사용
           messages: messages,
+          temperature: 0.7
         }),
       });
       const data = await response.json();
-      return data.choices[0].message.content.trim();
+
+      if (data && data.choices && data.choices.length > 0 && data.choices[0].message) {
+        return data.choices[0].message.content.trim();
+      } else {
+        console.warn('No valid response from API:', data);
+        return '응답을 가져올 수 없습니다.';
+      }
     } catch (error) {
       console.error('철학자 의견을 가져오는 중 오류 발생:', error);
       return '응답을 가져오는 중 오류가 발생했습니다.';
     }
   }
 
-  function displayMessage(philosopherId, message, isRightAligned) {
-    const chatContainer = document.getElementById('chatting-bubble-container');
-
-    // 메세지 전체 컨테이너
-    const messageDiv = document.createElement('div');
-    messageDiv.classList.add('message');
-    if (isRightAligned) messageDiv.classList.add('right');
-
-    // 철학자 이미지
-    const imgElement = document.createElement('img');
-    imgElement.src = chrome.runtime.getURL('asset/' + images[philosopherId - 1].current);
-    imgElement.alt = philosopherNames[philosopherId];
-    imgElement.classList.add('philosopher-image');
-    
-    // 철학자 이름
-    const nameElement = document.createElement('span');
-    nameElement.className = 'philosopher-name';
-    nameElement.textContent = philosopherNames[philosopherId]; // 이름 설정
-
-    // 요소 조립
-    const nameAndImageDiv = document.createElement('div');
-    nameAndImageDiv.classList.add('name-and-image');
-    nameAndImageDiv.appendChild(imgElement);
-    nameAndImageDiv.appendChild(nameElement);
-
-    // 메세지 텍스트
-    const textDiv = document.createElement('div');
-    textDiv.classList.add('message-text');
-    textDiv.textContent = message;
-
-    
-
-    if (isRightAligned) {
-      messageDiv.appendChild(textDiv); // 메시지 추가
-      messageDiv.appendChild(nameAndImageDiv); // 이름+이미지 추가
-    } else {
-      messageDiv.appendChild(nameAndImageDiv); // 이름+이미지 추가
-      messageDiv.appendChild(textDiv); // 메시지 추가
-    }
-
-    chatContainer.appendChild(messageDiv);
-    chatContainer.scrollTop = chatContainer.scrollHeight;
-  }
-
   function displaySkeletonMessage(philosopherId, isRightAligned) {
     const chatContainer = document.getElementById('chatting-bubble-container');
-  
-    // 메시지 전체 컨테이너
+
     const messageDiv = document.createElement('div');
     messageDiv.classList.add('message');
     if (isRightAligned) messageDiv.classList.add('right');
-  
-    // 철학자 이미지
+
     const imgElement = document.createElement('img');
     imgElement.src = chrome.runtime.getURL('asset/' + images[philosopherId - 1].current);
     imgElement.alt = philosopherNames[philosopherId];
     imgElement.classList.add('philosopher-image');
-  
-    // 철학자 이름
+
     const nameElement = document.createElement('span');
     nameElement.className = 'philosopher-name';
     nameElement.textContent = philosopherNames[philosopherId];
-  
-    // 메시지 텍스트 자리 (스켈레톤 효과 적용)
+
     const textDiv = document.createElement('div');
     textDiv.classList.add('message-text', 'skeleton-box');
-  
-    // 철학자 이름과 이미지를 감싸는 컨테이너
+
     const nameAndImageDiv = document.createElement('div');
     nameAndImageDiv.classList.add('name-and-image');
     nameAndImageDiv.appendChild(imgElement);
     nameAndImageDiv.appendChild(nameElement);
-  
-    // 요소 조립
+
     if (isRightAligned) {
-      messageDiv.appendChild(textDiv); // 메시지 추가
-      messageDiv.appendChild(nameAndImageDiv); // 이름+이미지 추가
+      messageDiv.appendChild(textDiv);
+      messageDiv.appendChild(nameAndImageDiv);
     } else {
-      messageDiv.appendChild(nameAndImageDiv); // 이름+이미지 추가
-      messageDiv.appendChild(textDiv); // 메시지 추가
+      messageDiv.appendChild(nameAndImageDiv);
+      messageDiv.appendChild(textDiv);
     }
-  
+
     chatContainer.appendChild(messageDiv);
     chatContainer.scrollTop = chatContainer.scrollHeight;
-  
-    return textDiv; // 나중에 스켈레톤을 실제 메시지로 대체하기 위해 반환
+
+    return textDiv;
+  }
+
+  function createTreeElement(index) {
+    const treeContainer = document.getElementById('tree-container');
+    if (!treeContainer) return;
+
+    const treeWrapper = document.createElement('div');
+    treeWrapper.className = 'tree-wrapper';
+    treeWrapper.style.position = 'absolute';
+    treeWrapper.style.top = '0px';
+    treeWrapper.style.left = `${20 + index * 120}px`;
+
+    const treeImage = document.createElement('img');
+    treeImage.id = `tree-image-${index}`;
+    treeImage.src = chrome.runtime.getURL('asset/tree_healthy.png');
+    treeImage.alt = 'Tree Status';
+    treeImage.style.width = '100px';
+
+    const treePercentage = document.createElement('div');
+    treePercentage.id = `tree-percentage-${index}`;
+    treePercentage.textContent = 'Usage: 0%';
+    treePercentage.style.textAlign = 'center';
+    treePercentage.style.fontSize = '14px';
+    treePercentage.style.fontWeight = 'bold';
+    treePercentage.style.color = '#333';
+    treePercentage.style.marginTop = '8px';
+
+    treeWrapper.appendChild(treeImage);
+    treeWrapper.appendChild(treePercentage);
+    treeContainer.appendChild(treeWrapper);
+
+    trees[index] = 0;
+  }
+
+  function updateTreeBurnStage(index, usagePercentage) {
+    const treeImage = document.getElementById(`tree-image-${index}`);
+    const treePercentage = document.getElementById(`tree-percentage-${index}`);
+
+    if (!treeImage || !treePercentage) return;
+
+    if (usagePercentage > 100) usagePercentage = 100;
+
+    treePercentage.textContent = `Usage: ${usagePercentage}%`;
+
+    if (usagePercentage < 25) {
+      treeImage.src = chrome.runtime.getURL('asset/tree_healthy.png');
+    } else if (usagePercentage < 50) {
+      treeImage.src = chrome.runtime.getURL('asset/tree_slight_burn.png');
+    } else if (usagePercentage < 75) {
+      treeImage.src = chrome.runtime.getURL('asset/tree_moderate_burn.png');
+    } else {
+      treeImage.src = chrome.runtime.getURL('asset/tree_burned.png');
+    }
+  }
+
+  let totalMessageCount = 0; // 전체 메시지 개수 추적
+
+  function getUsageIncrement(totalMessageCount) {
+    const baseIncrement = 4; // 초기 증가량
+    const step = Math.floor((totalMessageCount - 1) / 4); // 누적 메시지 개수에 따라 증가량 결정
+    return baseIncrement + (step >= 0 ? step : 0); // 음수 방지
   }
   
+  function incrementUsage() {
+    totalMessageCount++; // 메시지 개수 증가
+    const increment = getUsageIncrement(totalMessageCount); // 증가량 계산
   
+    trees[currentTreeIndex] += increment; // 현재 나무에 증가량 적용
+    updateTreeBurnStage(currentTreeIndex, trees[currentTreeIndex]);
   
-async function chat(phil_Ids, text) {
-  let turn = 0;
-  const conversationHistory = [{ role: 'user', content: text }];
+    if (trees[currentTreeIndex] >= 100) {
+      currentTreeIndex++;
+      createTreeElement(currentTreeIndex); // 새 나무 생성
+    }
+  }
+  
 
-  const conversation = async () => {
-    const currentPhilosopher = phil_Ids[turn % phil_Ids.length];
-    const isRightAligned = phil_Ids.length > 1 && turn % phil_Ids.length === 1;
+  async function chat(phil_Ids, text) {
+    let turn = 0;
+    const conversationHistory = [{ role: 'user', content: text }];
 
-    // 스켈레톤 메시지 표시
-    const skeletonTextDiv = displaySkeletonMessage(currentPhilosopher, isRightAligned);
+    const conversation = async () => {
+      const currentPhilosopher = phil_Ids[turn % phil_Ids.length];
+      const isRightAligned = phil_Ids.length > 1 && turn % phil_Ids.length === 1;
 
-    const systemPrompt = `${philosopherStyles[currentPhilosopher]} Limit your response to two sentences in Korean. Do not include any Korean. Continue the conversation based on the previous messages. Do not question.`;
-    const messages = [
-      { role: 'system', content: systemPrompt },
-      ...conversationHistory,
-    ];
+      const skeletonTextDiv = displaySkeletonMessage(currentPhilosopher, isRightAligned);
 
-    const opinion = await getPhilosopherOpinion(messages);
+      const systemPrompt = `${philosopherStyles[currentPhilosopher]} Reply in Korean, limit response to two sentences, and continue the conversation.`;
+      const messages = [
+        { role: 'system', content: systemPrompt },
+        ...conversationHistory,
+      ];
 
-    // 스켈레톤 텍스트를 실제 메시지로 대체
-    skeletonTextDiv.classList.remove('skeleton-box');
-    skeletonTextDiv.textContent = opinion;
+      const opinion = await getPhilosopherOpinion(messages);
 
-    conversationHistory.push({ role: 'assistant', content: opinion });
-    turn++;
-    setTimeout(conversation, 2000); // 2초마다 대화 진행
-  };
+      skeletonTextDiv.classList.remove('skeleton-box');
+      skeletonTextDiv.textContent = opinion;
 
-  conversation();
-}
+      conversationHistory.push({ role: 'assistant', content: opinion });
+      turn++;
 
+      messageCount++;
+      incrementUsage();
+
+      // 2초 후 다음 메시지
+      setTimeout(conversation, 2000);
+    };
+
+    conversation();
+  }
 
   closeButton.addEventListener('click', () => {
     overlay.style.display = 'none';
-  
+
     if (selectedImages.length > 0) {
+      let treeContainer = document.createElement('div');
+      treeContainer.id = 'tree-container';
+      treeContainer.style.position = 'fixed';
+      treeContainer.style.top = '20px';
+      treeContainer.style.left = '20px';
+      treeContainer.style.zIndex = '10000';
+      document.body.appendChild(treeContainer);
+
+      createTreeElement(0);
+
       const chatContainer = document.createElement('div');
       chatContainer.id = 'chatting-bubble-container';
       document.body.appendChild(chatContainer);
-  
-      // Background Script에 URL 요청
+
       chrome.runtime.sendMessage({ type: 'GET_CURRENT_TAB_URL' }, (response) => {
         const currentTabUrl = response.url;
-  
+
         if (currentTabUrl) {
           let articleText = '';
           let targetSelector = '';
-          console.log("currentTabUrl : ", currentTabUrl);
-  
-          // 도메인별로 targetSelector 설정
+
           if (currentTabUrl.startsWith('https://n.news.naver.com/')) {
             targetSelector = '#newsct_article';
           } else if (currentTabUrl.startsWith('https://m.entertain.naver.com/')) {
@@ -301,18 +343,14 @@ async function chat(phil_Ids, text) {
           } else if (currentTabUrl.startsWith('https://m.sports.naver.com/')) {
             targetSelector = '#comp_news_article';
           }
-  
+
           if (targetSelector) {
             const targetDiv = document.querySelector(targetSelector);
-            console.log("check : ", currentTabUrl.startsWith('https://m.sports.naver.com/'));
-            console.log("articleText : ", targetDiv.innerText);
             if (targetDiv) {
               articleText = targetDiv.innerText || '';
-
             }
           }
-  
-          // 채팅 시작
+
           chat(selectedImages, articleText);
         } else {
           console.error('현재 탭 URL을 가져올 수 없습니다.');
@@ -320,5 +358,4 @@ async function chat(phil_Ids, text) {
       });
     }
   });
-  
 })();
