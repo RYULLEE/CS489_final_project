@@ -255,15 +255,27 @@
     }
   }
 
-  function incrementUsage() {
-    trees[currentTreeIndex] += incrementPerMessage;
-    updateTreeBurnStage(currentTreeIndex, trees[currentTreeIndex]);
+  let totalMessageCount = 0; // 전체 메시지 개수 추적
 
+  function getUsageIncrement(totalMessageCount) {
+    const baseIncrement = 4; // 초기 증가량
+    const step = Math.floor((totalMessageCount - 1) / 4); // 누적 메시지 개수에 따라 증가량 결정
+    return baseIncrement + (step >= 0 ? step : 0); // 음수 방지
+  }
+  
+  function incrementUsage() {
+    totalMessageCount++; // 메시지 개수 증가
+    const increment = getUsageIncrement(totalMessageCount); // 증가량 계산
+  
+    trees[currentTreeIndex] += increment; // 현재 나무에 증가량 적용
+    updateTreeBurnStage(currentTreeIndex, trees[currentTreeIndex]);
+  
     if (trees[currentTreeIndex] >= 100) {
       currentTreeIndex++;
-      createTreeElement(currentTreeIndex);
+      createTreeElement(currentTreeIndex); // 새 나무 생성
     }
   }
+  
 
   async function chat(phil_Ids, text) {
     let turn = 0;
