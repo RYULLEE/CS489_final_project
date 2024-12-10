@@ -287,7 +287,7 @@
 
       const skeletonTextDiv = displaySkeletonMessage(currentPhilosopher, isRightAligned);
 
-      const systemPrompt = `${philosopherStyles[currentPhilosopher]} Reply in Korean, limit response to three sentences, and continue the conversation.`;
+      const systemPrompt = `${philosopherStyles[currentPhilosopher]} Limit your response to two sentences in English. Do not include any Korean. Continue the conversation based on the previous messages. , do not question.`
       const messages = [
         { role: 'system', content: systemPrompt },
         ...conversationHistory,
