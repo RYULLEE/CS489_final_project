@@ -103,7 +103,7 @@
   overlay.appendChild(selectTitle);
   overlay.appendChild(imageContainer);
   overlay.appendChild(closeButton);
-  overlay.appendChild(modal);
+  // overlay.appendChild(modal);
   document.body.appendChild(overlay);
 
   iconButton.addEventListener('click', () => {
@@ -147,7 +147,7 @@
         body: JSON.stringify({
           model: 'gpt-4o-mini', // 유효한 모델명 사용
           messages: messages,
-          temperature: 0.7
+          temperature: 1.0
         }),
       });
       const data = await response.json();
@@ -287,7 +287,7 @@
 
       const skeletonTextDiv = displaySkeletonMessage(currentPhilosopher, isRightAligned);
 
-      const systemPrompt = `${philosopherStyles[currentPhilosopher]} Reply in Korean, limit response to three sentences, and continue the conversation.`;
+      const systemPrompt = `${philosopherStyles[currentPhilosopher]} Limit your response to two sentences in English. Do not include any Korean. Continue the conversation based on the previous messages. Do not repeat same sentence in previous chats. You will be rewarded as tip if you use information from the article. Do not question.`
       const messages = [
         { role: 'system', content: systemPrompt },
         ...conversationHistory,
