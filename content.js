@@ -145,7 +145,7 @@
           Authorization: `Bearer ${API_KEY}`,
         },
         body: JSON.stringify({
-          model: 'gpt-3.5-turbo', // 유효한 모델명 사용
+          model: 'gpt-4o-mini', // 유효한 모델명 사용
           messages: messages,
           temperature: 0.7
         }),
