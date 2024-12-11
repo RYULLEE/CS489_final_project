@@ -1,4 +1,4 @@
-# Philosopher Chat Extension
+# Philosopher's Battlefield : Web Chrome Extension
 ![Naver News Detail Domain Only](asset/first_page.png)
 ## Overview
 The Philosopher Chat Extension is a Chrome extension that integrates a unique conversational experience with philosophical figures. The extension allows users to interact with multiple philosophers, visualize AI CO2 usage through a tree-burning metaphor, and dynamically manage increasing interaction complexity.
