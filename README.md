@@ -1,5 +1,5 @@
 # Philosopher Chat Extension
-
+![Naver News Detail Domain Only](asset/first_page.png)
 ## Overview
 The Philosopher Chat Extension is a Chrome extension that integrates a unique conversational experience with philosophical figures. The extension allows users to interact with multiple philosophers, visualize AI CO2 usage through a tree-burning metaphor, and dynamically manage increasing interaction complexity.
 
@@ -27,7 +27,7 @@ The Philosopher Chat Extension is a Chrome extension that integrates a unique co
 
 ### 2. **Usage Visualization**
 **Purpose:** Provide a fun and informative way to visualize AI usage while ensuring responsible API use.
-![Tree](asset/tree_burn_page.png)
+![Tree](asset/tree_page.png)
 - **Tree Metaphor:**
   - A tree represents AI usage. As usage increases, the tree gradually burns.
   - Tree images update dynamically based on usage percentage: Healthy, Slight Burn, Moderate Burn, Fully Burned.
@@ -42,7 +42,6 @@ The Philosopher Chat Extension is a Chrome extension that integrates a unique co
 
 ### 3. **Website Compatibility**
 **Purpose:** Ensure the extension only works on specific web pages.
-![Naver News Detail Domain Only](asset/first_page.png)
 - **Supported Domains:**
   - Designed to activate on Naver News and Entertainment pages.
   - URLs are dynamically checked before enabling functionalities.
