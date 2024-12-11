@@ -1,7 +1,7 @@
 # Philosopher Chat Extension
 
 ## Overview
-The Philosopher Chat Extension is a Chrome extension that integrates a unique conversational experience with philosophical figures. The extension allows users to interact with multiple philosophers, visualize AI usage through a tree-burning metaphor, and dynamically manage increasing interaction complexity.
+The Philosopher Chat Extension is a Chrome extension that integrates a unique conversational experience with philosophical figures. The extension allows users to interact with multiple philosophers, visualize AI CO2 usage through a tree-burning metaphor, and dynamically manage increasing interaction complexity.
 
 ---
 
@@ -36,12 +36,12 @@ The Philosopher Chat Extension is a Chrome extension that integrates a unique co
   - The logic continues seamlessly, visualizing cumulative usage.
 
 - **Dynamic Percentage Increase:**
-  - Initially, usage increases by 4% per message.
-  - Every 4 messages, the increment grows by 1% (e.g., 4%, 4%, 4%, 4%, 5%, 5%, ...).
+  - Initially, usage increases by used Tokens.
+  - So percentage gets higher as the chat number increases.
 
 ### 3. **Website Compatibility**
 **Purpose:** Ensure the extension only works on specific web pages.
-
+![Naver News Detail Domain Only](asset/first_page.png)
 - **Supported Domains:**
   - Designed to activate on Naver News and Entertainment pages.
   - URLs are dynamically checked before enabling functionalities.
@@ -101,7 +101,7 @@ The Philosopher Chat Extension is a Chrome extension that integrates a unique co
 
 1. Clone the repository:
    ```bash
-   git clone https://github.com/yourusername/philosopher-chat-extension.git
+   git clone https://github.com/RYULLEE/CS489_final_project.git
    ```
 
 2. Navigate to the project directory:
